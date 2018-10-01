@@ -32,6 +32,8 @@ def
 
 let
 
+rep
+
 ## need recursion
 ### if
 'if condition;sentence1;sentence2;……;end;'
@@ -96,6 +98,8 @@ out（当前只支持目标console)
 def
 
 let
+
+rep
 
 ## 需要嵌套：
 ### 条件语句
