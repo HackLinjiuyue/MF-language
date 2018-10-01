@@ -1,5 +1,5 @@
-   			local yxj={}
-   			 local zero='~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKMLMOPQRSTUVWXYZ_'
+   			yxj={}
+   			zero='~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKMLMOPQRSTUVWXYZ_'
    			yxj['<']=4
    			yxj['>']=4
    			yxj['!']=4
@@ -14,84 +14,19 @@
    			yxj['#']=7
    			yxj['$']=9
    			yxj['.']=8
-   			local symbol='+-*/^#$!=><|&.'
-function isin(s,arr,len)--检查器用
-	local isa=1
-	while(isa<len+1)
-		do
-		if(arr[isa]==s)
-			then
-			return true
-		end
-		isa=isa+1
-	end
-	return false
-end
-function isins(str,arr)
-	local isa=1
-	while(isa<string.len(arr)+1)
-		do
-		if(string.sub(arr,isa,isa)==str)
-			then
-			return true
-		else
-			isa=isa+1
-		end
-	end
-			return false
-end
-function outstack(stackn,len)
-	local isa=1
-	local out=''
-	while(isa<len+1)
-		do
-		out=out..stackn[isa]..','
-		isa=isa+1
-	end
-	return out
-	end
-function explainer()--解释器主函数
-	local set_nonstruct={"def",'fun','let','out'}
-	local set_struct={'if','rep','return','else','end'}
-	local value={}
-	local valuename={}
-	value.test={}
-	value.test.x={}
-	value.test.x.y=1
-	local err={}
-	local out=""
-	local errorcount=0
-	local file=io.open('test.mfs','r')
+   	set_nonstruct={"def",'fun','let','out'}
+	set_struct={'if','rep','return','else','end'}
+	value={}
+	valuename={}
+   	symbol='+-*/^#$!=><|&.'
+   	err={}
+	out=""
+	errorcount=0
+	file=io.open('test.mfs','r')
 	io.input(file)
-	local all_code=io.read("*a")
-	local total={}
-	total[1]={''}
-	local ta=1
+	all_code=io.read("*a")
 	io.close()
 	file=nil
-	local ac=1
-	local pa=1
-	while(ac<string.len(all_code)+1)
-		do
-		s=string.sub(all_code,ac,ac)
-		if(s==' ')
-			then
-			pa=pa+1
-			total[ta][pa]=''
-		elseif(s==';')
-			then
-			ta=ta+1
-			total[ta]={''}
-			pa=1
-		elseif(s=='\n')
-			then
-		else
-			total[ta][pa]=total[ta][pa]..s
-		end
-		ac=ac+1
-	end
-	ac=nil
-	pa=1
 	function calculate(valu)
 		    local stack={}
    			local last={''}
@@ -297,63 +232,9 @@ function explainer()--解释器主函数
 			local i=1
 			while(i<l)
 				do
-				if(isin(codebox[i][1],set_struct,5)==true)
-					then
-					if(codebox[i][1]=='if')
-						then
-						if(calculate(codebox[i][2])==true)
-							then
-							end_a=end_a-1
-					local temp={}
-					local te=0
-					local tmin=rep_pos[end_a]
-					local tmax=end_pos[end_a]+1
-					while(tmin<tmax)
-						do
-						te=te+1
-						temp[te]=codebox[i+te]
-						tmin=tmin+1
-					end
-					identfy_struct(temp,te+1)
-				else
-					i=end_pos[end_a]
-					end_a=end_a+1
-end
-				elseif(codebox[i][1]=='rep')
-					then
-					if(calculate(codebox[i][2])==true)
-						then
-						end_a=end_a-1
-					local temp={}
-					local te=0
-					local tmin=rep_pos[end_a]
-					local tmax=end_pos[end_a]+1
-					while(tmin<tmax)
-						do
-						te=te+1
-						temp[te]=codebox[i+te]
-						tmin=tmin+1
-					end
-					end_a=end_a+1
-					identfy_struct(temp,te)
-					else
-						i=end_pos[end_a]
-						end_a=end_a+1
-					end
-				end
-				elseif(codebox[i][1]=='end')
-				then
-				return nil
-				elseif(isin(codebox[i][1],set_nonstruct,5)==true)
-					then
-					identfy_nonstruct(codebox[i])
-				else
-					errorcount=errorcount+1
-					err[errorcount]=(pa+i-1)..'错误：语句<'..codebox[i][1]..'>不存在'
-				end
-				i=i+1
-			end
+
 		end
+	end
 	function identfy_nonstruct(code)--识别非嵌套语句
 		--语法规则:
 		--def:def a value 
@@ -383,56 +264,114 @@ end
 	return false
 			end
 	end
-	while(pa<ta+1)
+function isin(s,arr,len)--检查器用
+	local isa=1
+	while(isa<len+1)
 		do
-		if(isin(total[pa][1],set_nonstruct,5)==true)
+		if(arr[isa]==s)
 			then
-			if(total[pa][1]=='def')
-				then
-				value[total[pa][2]]=calculate(total[pa][3])
-		elseif(total[pa][1]=='out')
+			return true
+		end
+		isa=isa+1
+	end
+	return false
+end
+function isins(str,arr)
+	local isa=1
+	while(isa<string.len(arr)+1)
+		do
+		if(string.sub(arr,isa,isa)==str)
 			then
-			if(total[pa][2]=='console')
+			return true
+		else
+			isa=isa+1
+		end
+	end
+			return false
+end
+function outstack(stackn,len)
+	local isa=1
+	local out=''
+	while(isa<len+1)
+		do
+		out=out..stackn[isa]..','
+		isa=isa+1
+	end
+	return out
+	end
+function parseCode(text)
+	local temp={{''}}
+	local ac=1
+	local pa=1
+	local ta=1
+	while(ac<string.len(text)+1)
+		do
+		s=string.sub(text,ac,ac)
+		if(s==' ')
+			then
+			pa=pa+1
+			temp[ta][pa]=''
+		elseif(s==';')
+			then
+			ta=ta+1
+			temp[ta]={''}
+			pa=1
+		elseif(s=='\n')
+			then
+		else
+			temp[ta][pa]=temp[ta][pa]..s
+		end
+		ac=ac+1
+	end
+	temp.len=ta
+	return temp
+end
+function explainer(on_code)--解释器主函数
+	local pa=1
+	while(pa<on_code.len+1)
+		do
+		if(isin(on_code[pa][1],set_nonstruct,5)==true)
+			then
+			if(on_code[pa][1]=='def')
 				then
-				print(calculate(total[pa][3]))
+				value[on_code[pa][2]]=calculate(on_code[pa][3])
+		elseif(on_code[pa][1]=='out')
+			then
+			if(on_code[pa][2]=='console')
+				then
+				print(calculate(on_code[pa][3]))
 			else
 				errorcount=errorcount+1
-				err[errorcount]=pa..'：目标<'..total[pa][2]..'>不在可使用的范围内'
+				err[errorcount]=pa..'：目标<'..on_code[pa][2]..'>不在可使用的范围内'
 			end
-			elseif(total[pa][1]=='let')
+			elseif(on_code[pa][1]=='let')
 				then
-				if(value[total[pa][2]]==nil)
+				if(value[on_code[pa][2]]==nil)
 					then
 			errorcount=errorcount+1
-			err[errorcount]=i..'：变量<'..total[pa][2]..'>未定义'
+			err[errorcount]=i..'：变量<'..on_code[pa][2]..'>未定义'
 				else
-					value[total[pa][2]]=calculate(total[pa][3])
+					value[on_code[pa][2]]=calculate(on_code[pa][3])
 				end
 			end
-			elseif(isin(total[pa][1],set_struct,5)==true)
+			elseif(isin(on_code[pa][1],set_struct,5)==true)
 				then
 				local main_stack={}
 				local main_sa=0
-				 end_pos={}
-				 end_a=0
+				local end_a=0
 				local toa=0
-				 rep_pos={}
-				 local re=0
 				while(pa<ta+1)
 				do
 				toa=toa+1
-				main_stack[toa]=total[pa]
-				if(total[pa][1]~='end')
+				main_stack[toa]=on_code[pa]
+				if(on_code[pa][1]~='end')
 				then
-				if(isin(total[pa][1],set_struct,5)==true)
+				if(isin(on_code[pa][1],set_struct,5)==true)
 					then
 				main_sa=main_sa+1
-				re=re+1
-				rep_pos[re]=toa
 			end
 			else
 				end_a=end_a+1
-				end_pos[end_a]=toa
 			end
 			if(end_a==main_sa)
 			then
@@ -446,8 +385,7 @@ end
 		err[errorcount]=pa..'：end个数与if/rep的数量不匹配！<if/rep：'..main_sa..'|end：'..end_a..'>'
 		break
 	else
-		end_a=end_a+1
-		identfy_struct(main_stack,toa+1)
+		return 0
 		end
 		end
 		pa=pa+1
@@ -457,4 +395,4 @@ end
 	print(outstack(err,errorcount))
 end
 end
-explainer()
+explainer(parseCode(all_code))
