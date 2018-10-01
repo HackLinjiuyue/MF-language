@@ -360,7 +360,10 @@ function explainer(on_code)--解释器主函数
 				local main_sa=0
 				local end_a=0
 				local toa=0
-				while(pa<ta+1)
+				local re=0
+				local re_pos={}
+				local end_pos={}
+				while(pa<on_code.len+1)
 				do
 				toa=toa+1
 				main_stack[toa]=on_code[pa]
@@ -369,9 +372,15 @@ function explainer(on_code)--解释器主函数
 				if(isin(on_code[pa][1],set_struct,5)==true)
 					then
 				main_sa=main_sa+1
+				if(on_code[pa][1]=='rep')
+					then
+					re=re+1
+					re_pos[re]=toa
+				end
 			end
 			else
 				end_a=end_a+1
+				end_pos[end_a]=toa
 			end
 			if(end_a==main_sa)
 			then
@@ -385,7 +394,72 @@ function explainer(on_code)--解释器主函数
 		err[errorcount]=pa..'：end个数与if/rep的数量不匹配！<if/rep：'..main_sa..'|end：'..end_a..'>'
 		break
 	else
-		return 0
+		local i=1
+		re=0
+		end_a=end_a+1
+		main_sa=nil
+		local up={}
+		local u=0
+		while(i<toa+1)
+			do
+			if(isin(main_stack[i][1],set_struct,5)==true)
+				then
+				if(main_stack[i][1]=='if')
+					then
+					u=u+1
+					up[u]='if'
+					end_a=end_a-1
+					if(calculate(main_stack[i][2])==false)
+						then
+						i=end_pos[end_a]-1
+						end_a=end_a+1
+						up[u]=nil
+						u=u-1
+					end
+				elseif(main_stack[i][1]=='rep')
+					then
+					u=u+1
+					up[u]='rep'
+					end_a=end_a-1
+					if(calculate(main_stack[i][2])==false)
+						then
+						i=end_pos[end_a]-1
+						end_a=end_a+1
+						re=re-1
+						up[u]=nil
+						u=u-1
+					else
+						re=re+1
+					end
+				elseif(main_stack[i][1]=='end')
+					then
+					if(up[u]=='rep')
+						then
+					if(calculate(main_stack[re_pos[re]][2])==true)
+						then
+					i=re_pos[re]
+						else
+						re=re-1
+						end_a=end_a+1
+						up[u]=nil
+						u=u-1
+					end
+					elseif(up[u]=='if')
+						then
+						end_a=end_a+1
+						up[u]=nil
+						u=u-1
+					end
+				end
+			elseif(isin(main_stack[i][1],set_nonstruct,5)==true)
+				then
+				identfy_nonstruct(main_stack[i])
+			else
+				errorcount=errorcount+1
+				err[errorcount]=(i+pa-1)..'：错误：未知的指令<'..main_stack[i][1]..'>'
+			end
+			i=i+1
+		end
 		end
 		end
 		pa=pa+1
@@ -394,5 +468,15 @@ function explainer(on_code)--解释器主函数
 		then
 	print(outstack(err,errorcount))
 end
+set_struct=nil
+set_nonstruct=nil
+zero=nil
+err=nil
+main_stack=nil
+re_pos=nil
+end_pos=nil
+up=nil
+all_code=nil
+yxj=nil
 end
 explainer(parseCode(all_code))
