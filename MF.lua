@@ -408,48 +408,40 @@ function explainer(on_code)--解释器主函数
 					then
 					u=u+1
 					up[u]='if'
-					end_a=end_a-1
 					if(calculate(main_stack[i][2])==false)
 						then
-						i=end_pos[end_a]-1
-						end_a=end_a+1
 						up[u]=nil
 						u=u-1
+						while(main_stack[i][1]~='end')
+							do
+							i=i+1
+						end
 					end
 				elseif(main_stack[i][1]=='rep')
 					then
 					u=u+1
 					up[u]='rep'
-					end_a=end_a-1
 					if(calculate(main_stack[i][2])==false)
 						then
-						i=end_pos[end_a]-1
-						end_a=end_a+1
-						re=re-1
 						up[u]=nil
 						u=u-1
-					else
-						re=re+1
+						while(main_stack[i][1]~='end')
+							do
+							i=i+1
+						end
 					end
 				elseif(main_stack[i][1]=='end')
 					then
 					if(up[u]=='rep')
 						then
-					if(calculate(main_stack[re_pos[re]][2])==true)
-						then
-					i=re_pos[re]
-						else
-						re=re-1
-						end_a=end_a+1
-						up[u]=nil
-						u=u-1
+						while(main_stack[i][1]~='rep')
+							do
+							i=i-1
+						end
+						i=i-1
 					end
-					elseif(up[u]=='if')
-						then
-						end_a=end_a+1
-						up[u]=nil
-						u=u-1
-					end
+					up[u]=nil
+					u=u-1
 				end
 			elseif(isin(main_stack[i][1],set_nonstruct,5)==true)
 				then
