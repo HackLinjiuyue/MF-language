@@ -15,8 +15,11 @@ Of course we can do this together.
 
 # grammar(wait to improve)
 'def valuename value'----define a value
+
 'fun functionname parm1 parm2……'--use a function
+
 'let valuename value'----change the value
+
 'out toObj value'----output
 
 ## already finished
