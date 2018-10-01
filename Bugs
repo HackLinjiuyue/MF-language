@@ -1,2 +1,2 @@
-1.when the cursion is more than one,there will be forever loop or error.
-当嵌套层数多于1层时，会出现无限循环/报错的问题。
+1.if cursion when if cursions more than 1
+if的嵌套问题
