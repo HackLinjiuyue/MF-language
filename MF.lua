@@ -186,7 +186,7 @@
 							value[mode[ar]]=valuetable[ar]
 							ar=ar+1
 						end
-						stack[sa-1]=explainer(stack[sa-1].code)
+						stack[sa-1]=calculate(explainer(stack[sa-1].code))
 						local ar=1
 						while(ar<mode.len+1)
 							do
