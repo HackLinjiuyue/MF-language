@@ -15,7 +15,7 @@
    			yxj['$']=9
    			yxj['.']=8
    	set_nonstruct={"def",'fun','let','out'}
-	set_struct={'if','rep','return','else','end'}
+	set_struct={'if','rep','return','else','endif','endrep'}
 	value={}
 	valuename={}
    	symbol='+-*/^#$!=><|&.'
@@ -349,106 +349,90 @@ function explainer(on_code)--解释器主函数
 				if(value[on_code[pa][2]]==nil)
 					then
 			errorcount=errorcount+1
-			err[errorcount]=i..'：变量<'..on_code[pa][2]..'>未定义'
+			err[errorcount]=pa..'：变量<'..on_code[pa][2]..'>未定义'
 				else
 					value[on_code[pa][2]]=calculate(on_code[pa][3])
 				end
 			end
-			elseif(isin(on_code[pa][1],set_struct,5)==true)
+			elseif(isin(on_code[pa][1],set_struct,6)==true)
 				then
 				local main_stack={}
 				local main_sa=0
-				local end_a=0
+				local endif_a=0
+				local endrep_a=0
 				local toa=0
 				local re=0
-				local re_pos={}
-				local end_pos={}
+				local if_a=0
 				while(pa<on_code.len+1)
 				do
 				toa=toa+1
 				main_stack[toa]=on_code[pa]
-				if(on_code[pa][1]~='end')
-				then
-				if(isin(on_code[pa][1],set_struct,5)==true)
+				if(main_stack[toa][1]=='if')
 					then
-				main_sa=main_sa+1
-				if(on_code[pa][1]=='rep')
+					if_a=if_a+1
+				elseif(main_stack[toa][1]=='rep')
 					then
 					re=re+1
-					re_pos[re]=toa
+				elseif(main_stack[toa][1]=='endif')
+					then
+					endif_a=endif_a+1
+				elseif(main_stack[toa][1]=='endrep')
+					then
+					endrep_a=endrep_a+1
 				end
+				if(if_a==endif_a and re==endrep_a)
+				then
+				break
 			end
-			else
-				end_a=end_a+1
-				end_pos[end_a]=toa
-			end
-			if(end_a==main_sa)
-			then
-			break
+				pa=pa+1
 		end
-			pa=pa+1
-		end
-		if(end_a~=main_sa)
+		if(if_a~=endif_a)
 		then
 		errorcount=errorcount+1
-		err[errorcount]=pa..'：end个数与if/rep的数量不匹配！<if/rep：'..main_sa..'|end：'..end_a..'>'
-		break
+		err[errorcount]=pa..'：endif个数与if的数量不匹配！<if：'..if_a..'|endif：'..endif_a..'>'
+		elseif(re~=endrep_a)
+		then
+		errorcount=errorcount+1
+		err[errorcount]=pa..'：endrep个数与rep的数量不匹配！<rep：'..re..'|endrep：'..endrep_a..'>'
 	else
 		local i=1
-		re=0
-		end_a=end_a+1
 		main_sa=nil
-		local up={}
-		local u=0
 		while(i<toa+1)
 			do
-			if(isin(main_stack[i][1],set_struct,5)==true)
+			if(isin(main_stack[i][1],set_struct,6)==true)
 				then
 				if(main_stack[i][1]=='if')
 					then
-					u=u+1
-					up[u]='if'
 					if(calculate(main_stack[i][2])==false)
 						then
-						up[u]=nil
-						u=u-1
-						while(main_stack[i][1]~='end')
+						while(main_stack[i][1]~='endif')
 							do
 							i=i+1
 						end
 					end
 				elseif(main_stack[i][1]=='rep')
 					then
-					u=u+1
-					up[u]='rep'
 					if(calculate(main_stack[i][2])==false)
 						then
-						up[u]=nil
-						u=u-1
-						while(main_stack[i][1]~='end')
+						while(main_stack[i][1]~='endrep')
 							do
 							i=i+1
 						end
 					end
-				elseif(main_stack[i][1]=='end')
+					elseif(main_stack[i][1]=='endrep')
 					then
-					if(up[u]=='rep')
-						then
-						while(main_stack[i][1]~='rep')
-							do
-							i=i-1
-						end
+					while(main_stack[i][1]~='rep')
+						do
 						i=i-1
 					end
-					up[u]=nil
-					u=u-1
+					i=i-1
 				end
 			elseif(isin(main_stack[i][1],set_nonstruct,5)==true)
 				then
 				identfy_nonstruct(main_stack[i])
 			else
 				errorcount=errorcount+1
-				err[errorcount]=(i+pa-1)..'：错误：未知的指令<'..main_stack[i][1]..'>'
+				err[errorcount]=(pa-toa+i)..'：错误：未知的指令<'..main_stack[i][1]..'>'
 			end
 			i=i+1
 		end
@@ -458,7 +442,11 @@ function explainer(on_code)--解释器主函数
 	end
 	if(errorcount>0)
 		then
-	print(outstack(err,errorcount))
+	while(errorcount>0)
+		do
+		print(err[errorcount])
+		errorcount=errorcount-1
+	end
 end
 set_struct=nil
 set_nonstruct=nil
@@ -467,7 +455,6 @@ err=nil
 main_stack=nil
 re_pos=nil
 end_pos=nil
-up=nil
 all_code=nil
 yxj=nil
 end
