@@ -31,7 +31,7 @@ qq群：916289058
 `def valuename value`
 
 ### define function
-`deffun functionname parms(or arguments.the same meaning there);sentence1;sentence2;……;enddef;`
+`deffun functionname parms(or arguments.the same meaning there);sentence1;sentence2;……;endfun;`
 
 use `return value` to give the result of the function
 
@@ -124,7 +124,7 @@ e.g.:`x@(1,2)`
 
 `out 目标 值`-————————————|输出，原则遵从值标识
 
-`deffun 函数名 参数;语句1;语句2;……;enddef;`|定义函数
+`deffun 函数名 参数;语句1;语句2;……;endfun;`|定义函数
 
 `return 值` ——————|函数返回值，不填返回nil（lua）
 
