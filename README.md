@@ -21,7 +21,12 @@ If I can,I will try to make the complier of MF.
 ### define
 `def valuename value`
 
-### use function
+### define function
+`deffun functionname parms(or arguments.the same meaning there);sentence1;sentence2;……;enddef;`
+
+use `return value` to give the result of the function
+
+### quote function
 `fun functionname parm1 parm2……`
 
 ### change value
@@ -50,6 +55,10 @@ let
 rep
 
 if
+
+deffun
+
+return
 
 ## rules
 1.all the symbol`\n`must be neglected.
@@ -90,14 +99,25 @@ if
 #### object
 `.`:get object member value
 
+#### function
+`,`:add parms(arguments)
+
+`@`:quote function
+
+e.g.:`x@(1,2)`
+
 # 语法（待完善）
-`def 变量名 变量值`———————|定义变量
+`def 变量名 值`———————|定义变量
 
 `fun 函数名 参数1 参数2……`——- |执行函数
 
-`let 变量名 变量值`———————|设置变量，出现未定义的变量时报错
+`let 变量名 值`———————|设置变量，出现未定义的变量时报错
 
 `out 目标 值`-————————————|输出，原则遵从值标识
+
+`deffun 函数名 参数;语句1;语句2;……;enddef;`|定义函数
+
+`return 值` ——————|函数返回值，不填返回nil（lua）
 
 ### 条件语句
 `if a<b;语句1;语句2;……;end;`
@@ -122,6 +142,10 @@ rep
 
 if
 
+deffun
+
+return
+
 ### 规则：
 1.所有的换行(``\n``)全部忽略
 
@@ -139,3 +163,7 @@ if
 逻辑：`><=!&|`
 
 对象：`.`取对象成员
+
+函数：`,`追加参数 `@`引用函数
+
+例如：`a@(1,2)`
