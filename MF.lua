@@ -183,7 +183,7 @@
 						local ar=1
 						while(ar<mode.len+1)
 							do
-							value[mode[ar]]=valuetable[ar]
+							value[mode[ar]]=calculate(valuetable[ar])
 							ar=ar+1
 						end
 						stack[sa-1]=calculate(explainer(stack[sa-1].code))
@@ -389,7 +389,7 @@ function explainer(on_code)--解释器主函数
 					pa=pa+1
 					te=te+1
 					temp[te]=on_code[pa]
-					if(on_code[pa][1]=='enddef')
+					if(on_code[pa][1]=='endfun')
 					then
 					fun_a=fun_a-1
 					elseif(on_code[pa][1]=='deffun')
@@ -400,7 +400,7 @@ function explainer(on_code)--解释器主函数
 				if(fun_a~=0)
 					then
 					errorcount=errorcount+1
-					err[errorcount]=pa..'；错误：所定义的函数<'..on_code[p][2]..'>缺少结束标识<enddef>'
+					err[errorcount]=pa..'；错误：所定义的函数<'..on_code[p][2]..'>缺少结束标识<endfun>'
 				else
 					value[on_code[p][2]]={}
 					value[on_code[p][2]].code=temp
@@ -422,6 +422,11 @@ function explainer(on_code)--解释器主函数
 								temp[te]=''
 							end
 							se=se+1
+					end
+					if(temp[te]=='')
+						then
+						errorcount=errorcount+1
+						err[errorcount]=p..'：错误：所定义的函数<'..on_code[p][2]..'>的参数格式不正确'
 					end
 					value[on_code[p][2]].arguments=temp
 					value[on_code[p][2]].arguments.len=te
