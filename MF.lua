@@ -16,7 +16,7 @@
    			yxj['.']=8
    			yxj['@']=11
    			yxj[',']=10
-   	set_nonstruct={"def",'fun','let','out','deffun','return'}
+   	set_nonstruct={"def",'fun','let','out','deffun','return','fun'}
 	set_struct={'if','rep','return','else','endif','endrep'}
 	value={}
 	valuename={}
@@ -369,11 +369,47 @@ function explainer(on_code)--解释器主函数
 	local pa=1
 	while(pa<on_code.len+1)
 		do
-		if(isin(on_code[pa][1],set_nonstruct,7)==true)
+		if(isin(on_code[pa][1],set_nonstruct,8)==true)
 			then
 			if(on_code[pa][1]=='def')
 				then
 				value[on_code[pa][2]]=calculate(on_code[pa][3])
+			elseif(on_code[pa][1]=='fun')
+				then
+				if(value[on_code[pa][2]]~=nil)
+					then
+				local temp={}
+				local te=0
+				local mode=value[on_code[pa][2]].arguments
+				local ii=1
+				while(on_code[pa][2+ii]~=nil)
+					do
+					te=te+1
+					temp[te]=on_code[pa][2+ii]
+					ii=ii+1
+				end
+				if(temp[te]=='')
+					then
+					errorcount=errorcount+1
+					err[errorcount]=pa..'：错误：所调用的函数<'..on_code[pa][2]..'>参数格式不正确'
+				end
+				ii=1
+				while(ii<mode.len+1)
+					do
+					value[mode[ii]]=calculate(temp[ii])
+					ii=ii+1
+				end
+				ii=1
+				explainer(value[on_code[pa][2]].code)
+				while(ii<mode.len+1)
+					do
+					value[mode[ii]]=nil
+					ii=ii+1
+				end
+			else
+				errorcount=errorcount+1
+				err[errorcount]=pa..'：错误：未定义函数<'..on_code[pa][2]..'>'
+			end
 			elseif(on_code[pa][1]=='deffun')
 				then
 				local temp={}
@@ -527,7 +563,7 @@ function explainer(on_code)--解释器主函数
 					end
 					i=i-1
 				end
-			elseif(isin(main_stack[i][1],set_nonstruct,7)==true)
+			elseif(isin(main_stack[i][1],set_nonstruct,8)==true)
 				then
 				identfy_nonstruct(main_stack[i])
 			else
