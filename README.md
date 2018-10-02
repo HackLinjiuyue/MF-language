@@ -73,6 +73,8 @@ deffun
 
 return
 
+fun
+
 ## rules
 1.all the symbol`\n`must be neglected.
 
@@ -158,6 +160,8 @@ if
 deffun
 
 return
+
+fun
 
 ### 规则：
 1.所有的换行(``\n``)全部忽略
