@@ -17,13 +17,28 @@ If I can,I will try to make the complier of MF.
 如果可以的话，我会尝试去做MF的编译器。
 
 # grammar(wait to improve)
-'def valuename value'----define a value
 
-'fun functionname parm1 parm2……'--use a function
+### define
+`def valuename value`
 
-'let valuename value'----change the value
+### use function
+`fun functionname parm1 parm2……`
 
-'out toObj value'----output
+### change value
+`let valuename value`
+
+### output
+`out toObj value`
+
+### if
+`if condition;sentence1;sentence2;……;end;`
+
+### loop
+`rep conditon;sentence1;sentence2;……;end;`
+
+### end
+`endif`
+`endrep`
 
 ## already finished
 out(only support toobj:console)
@@ -34,17 +49,9 @@ let
 
 rep
 
-## need recursion
-### if
-'if condition;sentence1;sentence2;……;end;'
+if
 
-### loop
-'rep conditon;sentence1;sentence2;……;end;'
-
-### end
-'end'
-
-### rules
+## rules
 1.all the symbol`\n`must be neglected.
 
 2.`;` is seen as the split symbol of each sentence.
@@ -78,7 +85,7 @@ rep
 
 `|`:or
 
-'&':and
+`&`:and
 
 #### object
 `.`:get object member value
@@ -92,6 +99,18 @@ rep
 
 `out 目标 值`-————————————|输出，原则遵从值标识
 
+### 条件语句
+`if a<b;语句1;语句2;……;end;`
+
+### 循环语句
+
+`rep a<b;语句1;语句2;……;end;`
+
+### 结束语句
+`endif`
+
+`endrep`
+
 ## 已完成
 out（当前只支持目标console)
 
@@ -101,20 +120,14 @@ let
 
 rep
 
-## 需要嵌套：
-### 条件语句
-`if a<b;语句1;语句2;……;end;`
-### 循环语句
-`rep a<b;语句1;语句2;……;end;`
-### 结束语句
-统一使用`end`作为结束语句，用于调整所在栈的位置
+if
 
 ### 规则：
-1.所有的换行(`'\n'`)全部忽略
+1.所有的换行(``\n``)全部忽略
 
-2.以`';'`作为句子与句子间的分割符
+2.以`;`作为句子与句子间的分割符
 
-3.每一句中每空一格`' '`算一个单词
+3.每一句中每空一格`` ``算一个单词
 
 4.变量标识符：
 
