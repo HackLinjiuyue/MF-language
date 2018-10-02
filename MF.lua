@@ -14,11 +14,13 @@
    			yxj['#']=7
    			yxj['$']=9
    			yxj['.']=8
-   	set_nonstruct={"def",'fun','let','out'}
+   			yxj['@']=11
+   			yxj[',']=10
+   	set_nonstruct={"def",'fun','let','out','deffun','return'}
 	set_struct={'if','rep','return','else','endif','endrep'}
 	value={}
 	valuename={}
-   	symbol='+-*/^#$!=><|&.'
+   	symbol='+-*/^#$!=><|&.,@'
    	err={}
 	out=""
 	errorcount=0
@@ -27,6 +29,14 @@
 	all_code=io.read("*a")
 	io.close()
 	file=nil
+	function getmin(n1,n2)
+		if(n1<n2)
+			then
+			return n1
+		else
+			return n2
+		end
+	end
 	function calculate(valu)
 		    local stack={}
    			local last={''}
@@ -148,6 +158,41 @@
 					elseif(op=='.')
 						then
 						stack[sa-1]=stack[sa-1][last[ca-1]]
+					elseif(op==',')
+						then
+						stack[sa-1]=stack[sa-1]..','..stack[sa]
+					elseif(op=='@')
+						then
+						local ar=1
+						local valuetable={''}
+						local mode=stack[sa-1].arguments
+						local v=1
+						while(ar<string.len(stack[sa])+1)
+							do
+							local s=string.sub(stack[sa],ar,ar)
+							if(s~=',')
+								then
+								valuetable[v]=valuetable[v]..s
+							else
+								valuetable[v]=calculate(valuetable[v])
+								v=v+1
+								valuetable[v]=''
+							end
+							ar=ar+1
+						end
+						local ar=1
+						while(ar<mode.len+1)
+							do
+							value[mode[ar]]=valuetable[ar]
+							ar=ar+1
+						end
+						stack[sa-1]=explainer(stack[sa-1].code)
+						local ar=1
+						while(ar<mode.len+1)
+							do
+							value[mode[ar]]=nil
+							ar=ar+1
+						end
 					elseif(op=='+')
 							then
 							if(type(stack[sa-1])=='string'and type(stack[sa])=='string')
@@ -206,12 +251,6 @@
 					elseif(op=='!')
 							then
 							stack[sa-1]=stack[sa-1]~=stack[sa]
-					elseif(op=='≥')
-							then
-							stack[sa-1]=stack[sa-1]>=stack[sa]
-					elseif(op=='≤')
-							then
-							stack[sa-1]=stack[sa-1]<=stack[sa]
 					elseif(op=='|')
 							then
 							stack[sa-1]=stack[sa-1]or stack[sa]
@@ -330,11 +369,67 @@ function explainer(on_code)--解释器主函数
 	local pa=1
 	while(pa<on_code.len+1)
 		do
-		if(isin(on_code[pa][1],set_nonstruct,5)==true)
+		if(isin(on_code[pa][1],set_nonstruct,7)==true)
 			then
 			if(on_code[pa][1]=='def')
 				then
 				value[on_code[pa][2]]=calculate(on_code[pa][3])
+			elseif(on_code[pa][1]=='deffun')
+				then
+				local temp={}
+				local te=0
+				local fun_a=1
+				local p=pa
+				while(fun_a>0)
+					do
+					if(fun_a==0)
+						then
+						break
+					end
+					pa=pa+1
+					te=te+1
+					temp[te]=on_code[pa]
+					if(on_code[pa][1]=='enddef')
+					then
+					fun_a=fun_a-1
+					elseif(on_code[pa][1]=='deffun')
+						then
+						fun_a=fun_a+1
+				end
+				end
+				if(fun_a~=0)
+					then
+					errorcount=errorcount+1
+					err[errorcount]=pa..'；错误：所定义的函数<'..on_code[p][2]..'>缺少结束标识<enddef>'
+				else
+					value[on_code[p][2]]={}
+					value[on_code[p][2]].code=temp
+					value[on_code[p][2]].type='function'
+					value[on_code[p][2]].code.len=te
+					if(on_code[p][3]~=nil)
+						then
+						local temp={''}
+						local te=1
+						local se=1
+						while(se<string.len(on_code[p][3])+1)
+							do
+							local s=string.sub(on_code[p][3],se,se)
+							if(s~=',')
+								then
+								temp[te]=temp[te]..s
+							else
+								te=te+1
+								temp[te]=''
+							end
+							se=se+1
+					end
+					value[on_code[p][2]].arguments=temp
+					value[on_code[p][2]].arguments.len=te
+				end
+			end
+		elseif(on_code[pa][1]=='return')
+			then
+			return calculate(on_code[pa][2])
 		elseif(on_code[pa][1]=='out')
 			then
 			if(on_code[pa][2]=='console')
@@ -427,7 +522,7 @@ function explainer(on_code)--解释器主函数
 					end
 					i=i-1
 				end
-			elseif(isin(main_stack[i][1],set_nonstruct,5)==true)
+			elseif(isin(main_stack[i][1],set_nonstruct,7)==true)
 				then
 				identfy_nonstruct(main_stack[i])
 			else
