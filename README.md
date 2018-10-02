@@ -7,6 +7,10 @@ I will rewrite the code in c++ after I solve all the basic problems.
 Of course we can do this together.
 If I can,I will try to make the complier of MF.
 
+communication:qq group:916289058
+
+please join in with your github name or sketch how you know this.
+
 # MF语言
 这是我自己设计的一门解释型计算机语言，现在还存在着许多的问题等待解决。
 我将会将源代码公布出来，希望各位能和我一起来解决问题或是一起做开发，谢谢~
@@ -15,6 +19,11 @@ If I can,I will try to make the complier of MF.
 当然我们可以一起来做这件事情。
 
 如果可以的话，我会尝试去做MF的编译器。
+
+联系方式：
+qq群：916289058
+
+请在加群时附带你的github名称或是简略描述你的得知渠道。
 
 # grammar(wait to improve)
 
