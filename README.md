@@ -11,6 +11,8 @@ communication:qq group:916289058
 
 please join in with your github name or sketch how you know this.
 
+It runs successfully on the MacOS.
+
 # MF语言
 这是我自己设计的一门解释型计算机语言，现在还存在着许多的问题等待解决。
 我将会将源代码公布出来，希望各位能和我一起来解决问题或是一起做开发，谢谢~
@@ -24,6 +26,8 @@ please join in with your github name or sketch how you know this.
 qq群：916289058
 
 请在加群时附带你的github名称或是简略描述你的得知渠道。
+
+目前在苹果系统上能够成功运行。
 
 # grammar(wait to improve)
 
