@@ -36,10 +36,10 @@ use `return value` to give the result of the function
 `out toObj value`
 
 ### if
-`if condition;sentence1;sentence2;……;end;`
+`if condition;sentence1;sentence2;……;endif;`
 
 ### loop
-`rep conditon;sentence1;sentence2;……;end;`
+`rep conditon;sentence1;sentence2;……;endrep;`
 
 ### end
 `endif`
@@ -120,11 +120,11 @@ e.g.:`x@(1,2)`
 `return 值` ——————|函数返回值，不填返回nil（lua）
 
 ### 条件语句
-`if a<b;语句1;语句2;……;end;`
+`if a<b;语句1;语句2;……;endif;`
 
 ### 循环语句
 
-`rep a<b;语句1;语句2;……;end;`
+`rep a<b;语句1;语句2;……;endrep;`
 
 ### 结束语句
 `endif`
