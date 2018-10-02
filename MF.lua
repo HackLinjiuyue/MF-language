@@ -29,14 +29,6 @@
 	all_code=io.read("*a")
 	io.close()
 	file=nil
-	function getmin(n1,n2)
-		if(n1<n2)
-			then
-			return n1
-		else
-			return n2
-		end
-	end
 	function calculate(valu)
 		    local stack={}
    			local last={''}
@@ -267,40 +259,67 @@
 			return stack[1]
 		end
 	end
-	function identfy_struct(codebox,l)
-			local i=1
-			while(i<l)
-				do
-
-		end
-	end
-	function identfy_nonstruct(code)--识别非嵌套语句
-		--语法规则:
-		--def:def a value 
-		--out:out value
-		if(code[1]=='def')
+	function identfy_nonstruct(code,count,main,general)
+if(code[1]=='def')
+				then
+				value[code[2]]=calculate(code[3])
+			elseif(code[1]=='fun')
+				then
+				if(value[code[2]]~=nil)
+					then
+				local temp={}
+				local te=0
+				local mode=value[code[2]].arguments
+				local ii=1
+				while(code[2+ii]~=nil)
+					do
+					te=te+1
+					temp[te]=code[2+ii]
+					ii=ii+1
+				end
+				if(temp[te]=='')
+					then
+					errorcount=errorcount+1
+					err[errorcount]=(main-general+count)..'：错误：所调用的函数<'..code[2]..'>参数格式不正确'
+				end
+				ii=1
+				while(ii<mode.len+1)
+					do
+					value[mode[ii]]=calculate(temp[ii])
+					ii=ii+1
+				end
+				ii=1
+				explainer(value[code[2]].code)
+				while(ii<mode.len+1)
+					do
+					value[mode[ii]]=nil
+					ii=ii+1
+				end
+			else
+				errorcount=errorcount+1
+				err[errorcount]=(main-general+count)..'：错误：未定义函数<'..code[2]..'>'
+			end
+		elseif(code[1]=='return')
 			then
-			value[code[2]]=calculate(code[3])
-	elseif(code[1]=='out')
+			return calculate(code[2])
+		elseif(code[1]=='out')
 			then
-				if(code[2]=='console')
+			if(code[2]=='console')
 				then
 				print(calculate(code[3]))
 			else
 				errorcount=errorcount+1
-				err[errorcount]=(pa+i-1)..'：目标<'..code[2]..'>不在可使用的范围内'
+				err[errorcount]=i..'：目标<'..code[2]..'>不在可使用的范围内'
 			end
-	elseif(code[1]=='let')
-		then
-		if(value[code[2]]==nil)
-			then
+			elseif(code[1]=='let')
+				then
+				if(value[code[2]]==nil)
+					then
 			errorcount=errorcount+1
-			err[errorcount]=(pa+i-1)..'：变量<'..code[2]..'>未定义'
-		else
-			value[code[2]]=calculate(code[3])
-		end
-	else
-	return false
+			err[errorcount]=i..'：变量<'..code[2]..'>未定义'
+				else
+					value[code[2]]=calculate(code[3])
+				end
 			end
 	end
 function isin(s,arr,len)--检查器用
@@ -328,16 +347,6 @@ function isins(str,arr)
 	end
 			return false
 end
-function outstack(stackn,len)
-	local isa=1
-	local out=''
-	while(isa<len+1)
-		do
-		out=out..stackn[isa]..','
-		isa=isa+1
-	end
-	return out
-	end
 function parseCode(text)
 	local temp={{''}}
 	local ac=1
@@ -565,7 +574,12 @@ function explainer(on_code)--解释器主函数
 				end
 			elseif(isin(main_stack[i][1],set_nonstruct,8)==true)
 				then
-				identfy_nonstruct(main_stack[i])
+				if(main_stack[i][1]=='deffun')
+					then
+					errorcount=errorcount+1
+					err[errorcount]=(pa-toa+i)..'：错误：不能在if/rep嵌套内定义函数'
+				end
+				identfy_nonstruct(main_stack[i],i,pa,toa)
 			else
 				errorcount=errorcount+1
 				err[errorcount]=(pa-toa+i)..'：错误：未知的指令<'..main_stack[i][1]..'>'
