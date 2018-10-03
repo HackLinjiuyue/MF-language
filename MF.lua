@@ -267,18 +267,7 @@ if(code[1]=='def')
 				while(code[2+ii]~=nil)
 					do
 					te=te+1
-					temp[te]=code[2+ii]
-					ii=ii+1
-				end
-				if(temp[te]=='')
-					then
-					errorcount=errorcount+1
-					err[errorcount]=(main-general+count)..'：错误：所调用的函数<'..code[2]..'>参数格式不正确'
-				end
-				ii=1
-				while(ii<mode.len+1)
-					do
-					value[mode[ii]]=calculate(temp[ii])
+					temp[te]=calculate(code[2+ii])
 					ii=ii+1
 				end
 				ii=1
