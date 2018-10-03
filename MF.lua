@@ -16,8 +16,8 @@
    			yxj['.']=8
    			yxj['@']=11
    			yxj[',']=10
-   	set_nonstruct={"def",'fun','let','out','deffun','return','fun'}
-	set_struct={'if','rep','return','else','endif','endrep'}
+   	set_nonstruct={'load',"def",'fun','let','out','deffun','return','fun'}
+	set_struct={'if','rep','else','endif','endrep'}
 	value={}
 	valuename={}
    	symbol='+-*/^#$!=><|&.,@'
@@ -347,6 +347,16 @@ function isins(str,arr)
 	end
 			return false
 end
+function outstack(stackn,len)
+	local isa=1
+	local out=''
+	while(isa<len+1)
+		do
+		out=out..stackn[isa]..','
+		isa=isa+1
+	end
+	return out
+	end
 function parseCode(text)
 	local temp={{''}}
 	local ac=1
@@ -378,11 +388,18 @@ function explainer(on_code)--解释器主函数
 	local pa=1
 	while(pa<on_code.len+1)
 		do
-		if(isin(on_code[pa][1],set_nonstruct,8)==true)
+		if(isin(on_code[pa][1],set_nonstruct,9)==true)
 			then
 			if(on_code[pa][1]=='def')
 				then
 				value[on_code[pa][2]]=calculate(on_code[pa][3])
+			elseif(on_code[pa][1]=='load')
+				then
+				file=io.open(on_code[pa][2]..'.mfs','r')
+				io.input(file)
+				in_code=io.read("*a")
+				io.close()
+				explainer(parseCode(in_code))
 			elseif(on_code[pa][1]=='fun')
 				then
 				if(value[on_code[pa][2]]~=nil)
@@ -499,7 +516,7 @@ function explainer(on_code)--解释器主函数
 					value[on_code[pa][2]]=calculate(on_code[pa][3])
 				end
 			end
-			elseif(isin(on_code[pa][1],set_struct,6)==true)
+			elseif(isin(on_code[pa][1],set_struct,5)==true)
 				then
 				local main_stack={}
 				local main_sa=0
@@ -544,7 +561,7 @@ function explainer(on_code)--解释器主函数
 		main_sa=nil
 		while(i<toa+1)
 			do
-			if(isin(main_stack[i][1],set_struct,6)==true)
+			if(isin(main_stack[i][1],set_struct,5)==true)
 				then
 				if(main_stack[i][1]=='if')
 					then
@@ -572,7 +589,7 @@ function explainer(on_code)--解释器主函数
 					end
 					i=i-1
 				end
-			elseif(isin(main_stack[i][1],set_nonstruct,8)==true)
+			elseif(isin(main_stack[i][1],set_nonstruct,9)==true)
 				then
 				if(main_stack[i][1]=='deffun')
 					then
