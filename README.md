@@ -11,7 +11,9 @@ communication:qq group:916289058
 
 please join in with your github name or sketch how you know this.
 
-It runs successfully on the MacOS.
+It runs successfully on the MacOS(OS X).
+
+please make a file named 'test.mfs' or change the code of reading file to use.
 
 # MF语言
 这是我自己设计的一门解释型计算机语言，现在还存在着许多的问题等待解决。
@@ -21,6 +23,8 @@ It runs successfully on the MacOS.
 当然我们可以一起来做这件事情。
 
 如果可以的话，我会尝试去做MF的编译器。
+
+请创建一个名为test.mfs的文本文件或是修改读取代码来使用。
 
 联系方式：
 qq群：916289058
