@@ -35,13 +35,6 @@
    			local la=1
    			local ca=1
    			local sa=0
-   			local key=''
-		local valuecount=2
-		while(valuecount<string.len(valu)+1)
-			do
-			key=key..string.sub(valu,valuecount,valuecount)
-			valuecount=valuecount+1
-			end
 		if(valu=='nil')
    			then
    			return nil
