@@ -62,6 +62,13 @@ use `return value` to give the result of the function
 `endif`
 `endrep`
 
+### load file
+`load filename`
+
+warning:if you want to load a file that is not in the folder(or the same list),you have to write the absolute address.
+
+e.g.:`load test` or `load /desktop/test`
+
 ## already finished
 out(only support toobj:console)
 
@@ -78,6 +85,8 @@ deffun
 return
 
 fun
+
+load
 
 ## rules
 1.all the symbol`\n`must be neglected.
