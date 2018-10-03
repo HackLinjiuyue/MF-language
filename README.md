@@ -62,8 +62,10 @@ use `return value` to give the result of the function
 `endif`
 `endrep`
 
-### load file
+### load file and run
 `load filename`
+
+after loading,it will run
 
 warning:if you want to load a file that is not in the folder(or the same list),you have to write the absolute address.
 
@@ -147,6 +149,8 @@ e.g.:`x@(1,2)`
 
 `return 值` ——————|函数返回值，不填返回nil（lua）
 
+`load 文件名/文件的绝对路径`————|用于加载并运行.mfs源代码
+
 ### 条件语句
 `if a<b;语句1;语句2;……;endif;`
 
@@ -175,6 +179,8 @@ deffun
 return
 
 fun
+
+load
 
 ### 规则：
 1.所有的换行(``\n``)全部忽略
