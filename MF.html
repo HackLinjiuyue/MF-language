@@ -8,7 +8,7 @@
 		return text
 	}
 	document.getElementById('output').value=""
-	var yxj={},num=/[0-9]/
+	var yxj={},num=/[0-9]/,sign=false
 	  		yxj['<']=4
    			yxj['>']=4
    			yxj['≤']=4
@@ -30,7 +30,7 @@
    	var value={},valuename={},err={},errcount=-1,out=""
    	all_code=parseCode(all_code)
    	function calculate(exp){
-   		let stack={},last={0:''},la=0,sa=-1,ca=0,s
+   		let stack={},last={0:''},la=0,sa=-1,ca=0,s,lastobj
    		if(exp=="undefined"){
    			return undefined
    		}
@@ -42,6 +42,58 @@
    		}
          else if(exp=="obj"){
             return {'type':'object','member':{}}
+         }
+         else if(exp=="method"){//0:cmd 1:name 2:method 3:method name 4:parms
+               temp={}
+               let te=-1
+               let fun_a=0
+               let p=main_a
+               while(fun_a>-1&&main_a<code.length){
+                  if(fun_a==-1){break}
+                     main_a+=1
+                     te+=1
+                     temp[te]=code[main_a]
+                     if(code[main_a][0]=='deffun'){
+                        fun_a+=1
+                     }
+                     else if(code[main_a][0]=="endfun"){
+                        fun_a-=1
+                     }
+               }
+               if(fun_a!=-1){
+                  errcount+=1
+                  err[errcount]=(p+1)+"：错误：所定义的方法<"+code[p][3]+">deffun与endfun的数量不匹配"
+               }
+               else{
+                  value[code[p][1]].member[code[p][3]]={}
+               value[code[p][1]].member[code[p][3]].code=temp
+               value[code[p][1]].member[code[p][3]].type='method'
+               value[code[p][1]].member[code[p][3]].code.len=te
+               if(code[p][4]!=undefined){
+                  temp={0:''}
+                  let te=0
+                  let ii=0
+                  while(ii<code[p][4].length){
+                     let s=code[p][4][ii]
+                     if(s==","){
+                        te+=1
+                        temp[te]=""
+                     }
+                     else{
+                        temp[te]+=s
+                     }
+                     ii+=1
+                  }ii=0
+                  while(ii<te+1){
+                     if(temp[ii]==""){errcount+=1,err[errcount]=(p+1)+"：错误：所定义的方法<"+code[p][3]+">参数格式不正确";break}
+                     ii+=1
+                  }
+                  if(ii<te+1){break}else{
+                     value[code[p][1]].member[code[p][3]].arguments=temp
+                     value[code[p][1]].member[code[p][3]].arguments.len=te
+                  }
+               }
+               }
          }
    		else if(value[exp]!=undefined){
    			return value[exp]
@@ -115,6 +167,7 @@
    						sa+=1
    					}
    					else if(s=="."){
+                     lastobj=stack[sa-1]
    						stack[sa-1]=stack[sa-1].member[stack[sa]]
    					}
    					else if(s==","){
@@ -142,22 +195,38 @@
                            }
                            ar+=1
                      }ar=0
-                      if(stack[sa-1].type=="function"){
+                      if(stack[sa-1].type=="function"||stack[sa-1].type=='method'){
    						while(ar<mode.len+1){
    							value[mode[ar]]=calculate(valuetable[ar])
    							ar+=1
    						}
+                     if(stack[sa-1].type=='method'){
+                        value['this']=lastobj
+                     }
    						stack[sa-1]=run(stack[sa-1].code)
    						ar=0
    						while(ar<mode.len){
    							value[mode[ar]]=null
    							ar+=1
    						}
+                     if(stack[sa-1].type=='method'){
+                        value['this']=null
+                     }
                   }
                   else if(stack[sa-1].type=="object"){
                      ar=0
+                     let r1,r2
                      while(ar<v+1){
-                        stack[sa-1].member[calculate(valuetable[ar])]=calculate(valuetable[ar+1])
+                        r1=calculate(valuetable[ar])
+                        r2=calculate(valuetable[ar+1])
+                        if(typeof r1=='object'){return "对象不能作为成员名使用"}
+                           if(r2.type=="object"){
+                              for(i in r2.member){
+                                 stack[sa-1].member[i]=r2.member[i]
+                              }
+                           }
+                        else{
+                        stack[sa-1].member[r1]=r2}
                         ar+=2
                      }
                   }
@@ -282,10 +351,38 @@
    				}
    				break
    				case "def":
+               if(code[main_a][1].indexOf(".")>-1){
+                  errcount+=1
+                  err[errcount]=(1+main_a)+"错误：变量名中不能包含对象运算符"
+               }
+               else{
    				value[code[main_a][1]]=calculate(code[main_a][2])
-   				break
+            };
+               break
    				case "let":
-   				if(value[code[main_a][1]]==undefined){
+               if(code[main_a][1].indexOf(".")>-1){
+                  let obj,onvalue
+                  obj=code[main_a][1].split(".")
+                  onvalue=value[obi[0]]
+                  if(onvalue==undefined){
+                  errcount+=1
+                  err[errcount]=(main_a+1)+"：错误：对象<"+obj[0]+">未定义"
+                  main_a=code.len
+                  break
+                  }
+                  let o=1
+                  while(o<obj.length-1){
+                     onvalue=onvalue[obj[o]]
+                     if(onvalue==undefined){
+                        errcount+=1
+                        err[errcount]=(main_a+1)+"：错误：对象成员<"+obj[o]+">未定义"
+                        break
+                     }
+                     o+=1
+                  }if(o<obj.length-1){main_a=code.len;break}
+                  onvalue[obj[o]]=calculate(code[main_a][2])
+               }
+   				else if(value[code[main_a][1]]==undefined){
    					errcount+=1
    					err[errcount]=(main_a+1)+"：错误：变量<"+code[main_a][1]+">未定义"
    				}
@@ -297,14 +394,28 @@
    				return calculate(code[main_a][1])
    				break
    				case "fun":
-   				if(value[code[main_a][1]]==undefined){
+               let obj=value[code[main_a][1]]
+               if(code[main_a][1].indexOf(".")>-1){
+                  let linshi=code[main_a][1].split(".")
+                  let lin=1
+                  if(obj==undefined){errcount+=1,err[errcount]=(main_a+1)+"：错误：对象<"+linshi[0]+">未定义";main_a=code.len;break}
+                     else{
+                  while(lin<linshi.length){
+                     obj=obj[linshi[lin]]
+                     if(obj==undefined){errcount+=1,err[errcount]=(main_a+1)+"：错误：方法<"+linshi[lin]+">未定义";break}
+                     lin+=1
+                  }if(lin<linshi.length){main_a=code.len;break}
+                  sign=true
+               }
+               }
+   				if(value[code[main_a][1]]==undefined&&sign==false){
    					errcount+=1
    					err[errcount]=(main_a+1)+"：错误：函数<"+code[main_a][1]+">未定义"
+                  return
    				}
-   				else{
-   					let temp={}
+   					 temp={}
    					let t=-1
-   					let mode=value[code[main_a][1]].arguments
+   					let mode=obj.arguments
    					let ii=0
    					while(t<mode.len){
    						t+=1
@@ -316,12 +427,18 @@
    						value[mode[ii]]=calculate(temp[ii])
    						ii+=1
    					}
-   					run(value[code[main_a][1]].code)
+                  if(obj.type=='method'){
+                     value['this']=value[linshi[lin-2]]
+                  }
+   					run(obj.code)
    					while(ii<mode.length){
    						value[mode[ii]]=null
    						ii+=1
    					}
-   				}
+                  if(obj.type=='method'){
+                     value['this']=null
+                  }
+                  sign=false
    				break
    				case "deffun":
    				let temp={}
@@ -350,7 +467,7 @@
 					value[code[p][1]].type='function'
 					value[code[p][1]].code.len=te
 					if(code[p][2]!=undefined){
-						let temp={0:''}
+						temp={0:''}
 						let te=0
 						let ii=0
 						while(ii<code[p][2].length){
