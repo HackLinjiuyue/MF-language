@@ -40,6 +40,9 @@
    		else if(exp=="false"){
    			return false
    		}
+         else if(exp=="obj"){
+            return {'type':'object','member':{}}
+         }
    		else if(value[exp]!=undefined){
    			return value[exp]
    		}
@@ -112,7 +115,7 @@
    						sa+=1
    					}
    					else if(s=="."){
-   						stack[sa-1]=stack[sa-1][last[ca-1]]
+   						stack[sa-1]=stack[sa-1].member[stack[sa]]
    					}
    					else if(s==","){
    						stack[sa-1]=stack[sa-1]+","+stack[sa]
@@ -128,12 +131,18 @@
    								valuetable[v]+=s
    							}
    							else{
-   								valuetable[v]=valuetable[v]
    								v+=1
    								valuetable[v]=""
    							}
    							ar+=1
    						}ar=0
+                     while(ar<v+1){
+                        if(num.test(valuetable[ar])==false){
+                              valuetable[ar]='~'+valuetable[ar]
+                           }
+                           ar+=1
+                     }ar=0
+                      if(stack[sa-1].type=="function"){
    						while(ar<mode.len+1){
    							value[mode[ar]]=calculate(valuetable[ar])
    							ar+=1
@@ -144,6 +153,14 @@
    							value[mode[ar]]=null
    							ar+=1
    						}
+                  }
+                  else if(stack[sa-1].type=="object"){
+                     ar=0
+                     while(ar<v+1){
+                        stack[sa-1].member[calculate(valuetable[ar])]=calculate(valuetable[ar+1])
+                        ar+=2
+                     }
+                  }
    					}
    				else if(s=="+"){
    					if(typeof stack[sa-1]=='string'&&typeof stack[sa]=='string'){
