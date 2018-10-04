@@ -88,7 +88,7 @@
                      if(temp[ii]==""){errcount+=1,err[errcount]=(p+1)+"：错误：所定义的方法<"+code[p][3]+">参数格式不正确";break}
                      ii+=1
                   }
-                  if(ii<te+1){break}else{
+                  if(ii<te+1){main_a=code.len;return null}else{
                      value[code[p][1]].member[code[p][3]].arguments=temp
                      value[code[p][1]].member[code[p][3]].arguments.len=te
                   }
@@ -336,6 +336,15 @@
    		if(count_rep==count_endrep&&count_if==count_endif){main_a=0,count_if=0}
    		while(main_a<code.len){
    			switch(code[main_a][0]){
+               case "def":
+               if(code[main_a][1].indexOf(".")>-1){
+                  errcount+=1
+                  err[errcount]=(main_a+1)+"：错误：所定义的变量<"+code[main_a][1]+">不能包含."
+                  break
+               }
+               else{
+               value[code[main_a][1]]=calculate(code[main_a][2])}
+               break
    				case "out":
    				if(code[main_a][1]=="output"){
    					out+=calculate(code[main_a][2])+"\n"
@@ -350,15 +359,6 @@
    					err[errcount]=(main_a+1)+"：错误：无效的输出目标<"+code[main_a][1]+">"
    				}
    				break
-   				case "def":
-               if(code[main_a][1].indexOf(".")>-1){
-                  errcount+=1
-                  err[errcount]=(1+main_a)+"错误：变量名中不能包含对象运算符"
-               }
-               else{
-   				value[code[main_a][1]]=calculate(code[main_a][2])
-            };
-               break
    				case "let":
                if(code[main_a][1].indexOf(".")>-1){
                   let obj,onvalue
