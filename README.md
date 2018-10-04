@@ -38,6 +38,12 @@ qq群：916289058
 ### define
 `def valuename value`
 
+special value(these are key words that can do something before calculating):
+`false`
+`true`
+`undefined(js)``nil(lua)`
+`obj`
+
 ### define function
 `deffun functionname parms(or arguments.the same meaning there.use<,>to separate arguments);sentence1;sentence2;……;endfun;`
 
@@ -133,6 +139,10 @@ load(only for lua version)
 #### object
 `.`:get object member value
 
+`@`:add object members or change the value of the object(must define first)
+
+e.g.:`object@(~atk,1)`
+
 #### function
 `,`:add parms(arguments)
 
@@ -154,6 +164,12 @@ e.g.:`x@(1,2)`
 `return 值` ——————|函数返回值，不填返回`nil`（lua）`undefined`(js)
 
 `load 文件名/文件的绝对路径`————|用于加载并运行.mfs源代码(仅用于lua版)
+
+### 定义变量时的特殊值
+`true`
+`false`
+`nil(lua)` `undefined(js)`
+`obj`
 
 ### 条件语句
 `if a<b;语句1;语句2;……;endif;`
@@ -206,7 +222,9 @@ load(仅用于lua版)
 
 逻辑：`><=!&|`(仅js可用:`≥≤`)
 
-对象：`.`取对象成员
+对象：`.`取对象成员 `@`给对象成员赋值/添加对象成员(需先进行对象定义)
+
+例如:`对象@(~攻击,1)`
 
 函数：`,`追加参数 `@`引用函数
 
