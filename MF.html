@@ -1,0 +1,423 @@
+<html>
+<head>
+<script type="text/javascript">
+	function explainer(all_code){
+	function parseCode(text){
+		text=text.replace(/\n/g,"")
+		text=text.split(";")
+		return text
+	}
+	document.getElementById('output').value=""
+	var yxj={},num=/[0-9]/
+	  		yxj['<']=4
+   			yxj['>']=4
+   			yxj['≤']=4
+   			yxj['≥']=4
+   			yxj['!']=4
+   			yxj['=']=4
+   			yxj['&']=2
+   			yxj['|']=3
+   			yxj['+']=5
+   			yxj['-']=5
+   			yxj['/']=6
+   			yxj['*']=6
+   			yxj['^']=7
+   			yxj['#']=7
+   			yxj['$']=9
+   			yxj['.']=8
+   			yxj['@']=11
+   			yxj[',']=10
+   	var value={},valuename={},err={},errcount=-1,out=""
+   	all_code=parseCode(all_code)
+   	function calculate(exp){
+   		let stack={},last={0:''},la=0,sa=-1,ca=0,s
+   		if(exp=="undefined"){
+   			return undefined
+   		}
+   		else if(exp=="true"){
+   			return true
+   		}
+   		else if(exp=="false"){
+   			return false
+   		}
+   		else if(value[exp]!=undefined){
+   			return value[exp]
+   		}
+   		else{
+   			while(ca<exp.length){
+   				s=exp[ca]
+   				if(s=="("){
+   					sa=sa+1
+   					stack[sa]=s
+   				}
+   				else if(s==")"){
+   					while(stack[sa]!="("){
+   						la=la+1
+   						last[la]=stack[sa]
+   						stack[sa]=null
+   						sa=sa-1
+   					}
+   					stack[sa]=null
+   					sa-=1
+   					la+=1
+   					last[la]=""
+   				}
+   				else if(yxj[s]!=undefined){
+   					let yxj1=yxj[s]
+   					let yxj2=yxj[stack[sa]]
+   					if(yxj2==undefined){
+   						yxj2=0
+   					}
+   					if(yxj1>yxj2){
+   						sa+=1
+   						stack[sa]=s
+   						la+=1
+   						last[la]=""
+   					}
+   					else{
+   						while(yxj2>=yxj1){
+   							la+=1
+   							last[la]=stack[sa]
+   							stack[sa]=null
+   							sa-=1
+   							yxj2=yxj[stack[sa]]
+   							if(yxj2==undefined){
+   								yxj2=0
+   							}
+   						}
+   						sa+=1
+   						stack[sa]=s
+   						la+=1
+   						last[la]=""
+   					}
+   				}
+   				else{
+   					last[la]+=s
+   				}
+   				ca=ca+1
+   			}
+   			if(sa>-1){
+   				la+=1
+   				last[la]=stack[sa]
+   				sa-=1
+   			}
+   			ca=0
+   			sa=0
+   			while(ca<la+1){
+   				s=last[ca]
+   				if(s==""){ca+=1;continue}
+   				if(yxj[s]!=undefined){
+   					if(s=="$"){
+   						stack[sa]=stack[sa]*-1
+   						sa+=1
+   					}
+   					else if(s=="."){
+   						stack[sa-1]=stack[sa-1][last[ca-1]]
+   					}
+   					else if(s==","){
+   						stack[sa-1]=stack[sa-1]+","+stack[sa]
+   					}
+   					else if(s=="@"){
+   						ar=0
+   						valuetable={0:''}
+   						mode=stack[sa-1].arguments
+   						v=0
+   						while(ar<stack[sa].length){
+   							s=stack[sa][ar]
+   							if(s!=","){
+   								valuetable[v]+=s
+   							}
+   							else{
+   								valuetable[v]=valuetable[v]
+   								v+=1
+   								valuetable[v]=""
+   							}
+   							ar+=1
+   						}ar=0
+   						while(ar<mode.len+1){
+   							value[mode[ar]]=calculate(valuetable[ar])
+   							ar+=1
+   						}
+   						stack[sa-1]=run(stack[sa-1].code)
+   						ar=0
+   						while(ar<mode.len){
+   							value[mode[ar]]=null
+   							ar+=1
+   						}
+   					}
+   				else if(s=="+"){
+   					if(typeof stack[sa-1]=='string'&&typeof stack[sa]=='string'){
+   						stack[sa-1]+=stack[sa]
+   					}
+   					else if(typeof stack[sa-1]=='number'&&typeof stack[sa]=='number'){
+   						stack[sa-1]+=stack[sa]
+   					}
+   					else{
+   						return "不同类型的数据无法相加"
+   					}
+   				}
+   				else if(s=="-"){
+   					stack[sa-1]-=stack[sa]
+   				}
+   				else if(s=="*"){
+   					stack[sa-1]*=stack[sa]
+   				}
+   				else if(s=="/"){
+   					if(stack[sa]==0){return "0不能作为被除数"}
+   					stack[sa-1]/=stack[sa]
+   				}
+   				else if(s=='^'){
+   					if(stack[sa]==0&&stack[sa-1]==0){return "0的0次方没有意义"}
+   					stack[sa-1]^=stack[sa]
+   				}
+   				else if(s=="#"){
+   					if(stack[sa-1]<0&&stack[sa]%2==0){return "负数没有偶次方根"}
+   					if(stack[sa-1]<0&&stack[sa]%2==0){return "偶次方根下的数必须大于等于0"}
+   					else if(stack[sa-1]<0&&stack[sa]%2==1){stack[sa-1]=-1*(-1*stack[sa-1])^(1/stack[sa])}
+   					else{stack[sa-1]^=(1/stack[sa])}
+   				}
+   				else if(s=='>'){
+   					stack[sa-1]=stack[sa-1]>stack[sa]
+   				}
+   				else if(s=='<'){
+   					stack[sa-1]=stack[sa-1]<stack[sa]
+   				}
+   				else if(s=='='){
+   					stack[sa-1]=stack[sa-1]==stack[sa]
+   				}
+   				else if(s=='≥'){
+   					stack[sa-1]=stack[sa-1]>=stack[sa]
+   				}
+   				else if(s=='≤'){
+   					stack[sa-1]=stack[sa-1]<=stack[sa]
+   				}
+   				else if(s=='!'){
+   					stack[sa-1]=stack[sa-1]!=stack[sa]
+   				}
+   				else if(s=="&"){
+   					stack[sa-1]=stack[sa-1]&&stack[sa]
+   				}
+   				else if(s=="|"){
+   					stack[sa-1]=stack[sa-1]||stack[sa]
+   				}sa-=1
+   				}else{
+   					sa+=1
+   					if(last[ca][0]=="~"){
+   						stack[sa]=last[ca].substring(1,last[ca].length)
+   					}
+   					else if(num.test(last[ca])==true){
+   						stack[sa]=parseFloat(last[ca])
+   					}
+   					else if(value[last[ca]]!=undefined){
+   						stack[sa]=value[last[ca]]
+   					}
+   					else{
+   						return "变量<"+last[ca]+">未定义"
+   					}
+   				}
+   				ca+=1
+   			}
+   			return stack[sa]
+   		}
+   	}
+   	function run(code){
+   		let main_a=0
+   		let count_if=0,count_rep=0,count_endif=0,count_endrep=0,count_else=0
+   		if(code.len==undefined){
+   		while(main_a<code.length){
+   			code[main_a]=code[main_a].split(" ")
+   			main_a+=1
+   		}main_a=0;code.len=code.length}
+   		while(main_a<code.len){
+   			switch(code[main_a][0]){
+   				case "if":
+   				count_if+=1
+   				break
+   				case 'rep':
+   				count_rep+=1
+   				break
+   				case 'endif':
+   				count_endif+=1
+   				break
+   				case 'endrep':
+   				count_endrep+=1
+   				break
+   			}
+   			main_a+=1
+   		}
+   		if(count_if!=count_endif){errcount+=1;err[errcount]="所有的<if>与<endif>个数不匹配，<if>:"+count_if+",<endif>:"+count_endif;main_a=code.len}
+   		if(count_rep!=count_endrep){errcount+=1;err[errcount]="所有的<rep>与<endrep>个数不匹配，<rep>:"+count_rep+",<endrep>:"+count_endrep;main_a=code.len}
+   		if(count_rep==count_endrep&&count_if==count_endif){main_a=0,count_if=0}
+   		while(main_a<code.len){
+   			switch(code[main_a][0]){
+   				case "out":
+   				if(code[main_a][1]=="output"){
+   					out+=calculate(code[main_a][2])+"\n"
+   					document.getElementById('output').value=out
+   				}
+   				else if(code[main_a][1]=="console"){
+   					out+=calculate(code[main_a][2])+"\n"
+   					console.log(out)
+   				}
+   				else{
+   					errcount+=1
+   					err[errcount]=(main_a+1)+"：错误：无效的输出目标<"+code[main_a][1]+">"
+   				}
+   				break
+   				case "def":
+   				value[code[main_a][1]]=calculate(code[main_a][2])
+   				break
+   				case "let":
+   				if(value[code[main_a][1]]==undefined){
+   					errcount+=1
+   					err[errcount]=(main_a+1)+"：错误：变量<"+code[main_a][1]+">未定义"
+   				}
+   				else{
+   					value[code[main_a][1]]=calculate(code[main_a][2])
+   				}
+   				break
+   				case "return":
+   				return calculate(code[main_a][1])
+   				break
+   				case "fun":
+   				if(value[code[main_a][1]]==undefined){
+   					errcount+=1
+   					err[errcount]=(main_a+1)+"：错误：函数<"+code[main_a][1]+">未定义"
+   				}
+   				else{
+   					let temp={}
+   					let t=-1
+   					let mode=value[code[main_a][1]].arguments
+   					let ii=0
+   					while(t<mode.len){
+   						t+=1
+   						temp[t]=code[main_a][2+ii]
+   						ii+=1
+   					}
+   					ii=0
+   					while(ii<mode.len+1){
+   						value[mode[ii]]=calculate(temp[ii])
+   						ii+=1
+   					}
+   					run(value[code[main_a][1]].code)
+   					while(ii<mode.length){
+   						value[mode[ii]]=null
+   						ii+=1
+   					}
+   				}
+   				break
+   				case "deffun":
+   				let temp={}
+   				let te=-1
+   				let fun_a=0
+   				let p=main_a
+   				while(fun_a>-1&&main_a<code.length){
+   					if(fun_a==-1){break}
+   						main_a+=1
+   						te+=1
+   						temp[te]=code[main_a]
+   						if(code[main_a][0]=='deffun'){
+   							fun_a+=1
+   						}
+   						else if(code[main_a][0]=="endfun"){
+   							fun_a-=1
+   						}
+   				}
+   				if(fun_a!=-1){
+   					errcount+=1
+   					err[errcount]=(p+1)+"：错误：所定义的函数<"+code[p][1]+">deffun与endfun的数量不匹配"
+   				}
+   				else{
+   					value[code[p][1]]={}
+					value[code[p][1]].code=temp
+					value[code[p][1]].type='function'
+					value[code[p][1]].code.len=te
+					if(code[p][2]!=undefined){
+						let temp={0:''}
+						let te=0
+						let ii=0
+						while(ii<code[p][2].length){
+							let s=code[p][2][ii]
+							if(s==","){
+								te+=1
+								temp[te]=""
+							}
+							else{
+								temp[te]+=s
+							}
+							ii+=1
+						}ii=0
+						while(ii<te+1){
+							if(temp[ii]==""){errcount+=1,err[errcount]=(p+1)+"：错误：所定义的函数<"+code[p][1]+">参数格式不正确";break}
+							ii+=1
+						}
+						if(ii<te+1){break}else{
+							value[code[p][1]].arguments=temp
+							value[code[p][1]].arguments.len=te
+						}
+					}
+   				}
+   				break
+   				case "if":
+   				count_if+=1
+   				if(calculate(code[main_a][1])==false){
+   					while(main_a<code.len){
+   						main_a+=1
+   						if(code[main_a][0]=="endif"){count_if-=1;break}
+   						else if(code[main_a][0]=='else'){main_a-=1;break}
+   					}
+   				}
+   				break
+   				case "else":
+   				count_else+=1
+   				if(count_else!=count_if&&count_else>1){errcount+=1,err[errcount]=(main_a+1)+"：错误：else只能在一组if-endif中出现一次";main_a=code.len;break}
+   				else{
+   				if(code[main_a][1]!=undefined){
+   					errcount+=1,err[errcount]=(main_a+1)+"：错误：未知的指令<else "+code[main_a][1]+">"
+   					}
+   					let i=main_a+1
+   					while(i<code.len){
+   						if(code[i][0]=='endif'){break}
+   							i+=1
+   					}if(i==code.len){errcount+=1,err[errcount]=(main_a+1)+"：错误：else指令必须被包含在if-endif之间"}
+   			}
+   				break
+   				case "rep":
+   				if(calculate(code[main_a][1])==false){
+   					while(main_a<code.len){
+   						main_a+=1
+   						if(code[main_a][0]=="endrep"){break}
+   					}
+   				}
+   			break
+   			case "endif":
+   			count_else-=1
+   			count_if-=1
+   			break
+   			case "endrep":
+   			while(main_a>0){
+   				main_a-=1
+   				if(code[main_a][0]=='rep'){main_a-=1;break}
+   			}
+   			break
+   				default:
+   				errcount+=1
+   				err[errcount]=(main_a+1)+"：错误：未知的指令<"+code[main_a][0]+">"
+   				break
+   			}
+   			main_a+=1
+   		}
+   			while(errcount>-1){
+   			out+=err[errcount]+"\n"
+   			errcount-=1
+   		}
+   			document.getElementById('output').value=out
+   	}
+   	run(all_code)
+	}
+</script>
+</head>
+<body>
+<button onclick='explainer(document.getElementById("code").value)'></button><br/><textarea id='code' cols=30 rows=30>请在这里写代码(please code there)</textarea><textarea id='output' cols="30" rows=30 disabled="disabled">输出(output)</textarea>
+</body>
+</html>
