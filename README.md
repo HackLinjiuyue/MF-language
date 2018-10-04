@@ -55,6 +55,8 @@ use `return value` to give the result of the function
 ### if
 `if condition;sentence1;sentence2;……;endif;`
 
+`if a<b;s1;……;else;s1;……;endif`
+
 ### loop
 `rep conditon;sentence1;sentence2;……;endrep;`
 
@@ -72,7 +74,7 @@ warning:if you want to load a file that is not in the folder(or the same list),y
 e.g.:`load test` or `load /desktop/test`
 
 ## already finished
-out(only support toobj:console)
+out(lua:only support toobj:`console`)(js:support `console` and `output`)
 
 def
 
@@ -82,13 +84,15 @@ rep
 
 if
 
+else
+
 deffun
 
 return
 
 fun
 
-load
+load(only for lua version)
 
 ## rules
 1.all the symbol`\n`must be neglected.
@@ -112,7 +116,7 @@ load
 `$x`:$ means get negative number.
 
 #### logic
-`><=!|&`
+`><=!|&`(only for js:`≥≤`)
 
 `>`:greater than
 
@@ -143,16 +147,18 @@ e.g.:`x@(1,2)`
 
 `let 变量名 值`———————|设置变量，出现未定义的变量时报错
 
-`out 目标 值`-————————————|输出，原则遵从值标识
+`out 目标 值`-————————————|输出语句
 
 `deffun 函数名 参数;语句1;语句2;……;endfun;`|定义函数，用逗号来隔开每个参数
 
-`return 值` ——————|函数返回值，不填返回nil（lua）
+`return 值` ——————|函数返回值，不填返回`nil`（lua）`undefined`(js)
 
-`load 文件名/文件的绝对路径`————|用于加载并运行.mfs源代码
+`load 文件名/文件的绝对路径`————|用于加载并运行.mfs源代码(仅用于lua版)
 
 ### 条件语句
 `if a<b;语句1;语句2;……;endif;`
+
+`if a<b;语句1;……;else;语句1;……;endif`
 
 ### 循环语句
 
@@ -164,7 +170,7 @@ e.g.:`x@(1,2)`
 `endrep`
 
 ## 已完成
-out（当前只支持目标console)
+out（lua:当前只支持目标`console`)(js:支持`console`和`output`)
 
 def
 
@@ -174,13 +180,15 @@ rep
 
 if
 
+else
+
 deffun
 
 return
 
 fun
 
-load
+load(仅用于lua版)
 
 ### 规则：
 1.所有的换行(``\n``)全部忽略
@@ -196,7 +204,7 @@ load
 ### 计算表达式 规定所有运算为:
 算数：`+-*/  ^平n次方 #开n次根 $取负`
 
-逻辑：`><=!&|`
+逻辑：`><=!&|`(仅js可用:`≥≤`)
 
 对象：`.`取对象成员
 
