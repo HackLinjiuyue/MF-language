@@ -139,6 +139,8 @@ load(only for lua version)
 #### object
 `.`:get object member value
 
+e.g.:`object.1(for number)` `object.~x(for string)`
+
 `@`:add object members or change the value of the object(must define first)
 
 e.g.:`object@(~atk,1)`
@@ -223,6 +225,8 @@ load(仅用于lua版)
 逻辑：`><=!&|`(仅js可用:`≥≤`)
 
 对象：`.`取对象成员 `@`给对象成员赋值/添加对象成员(需先进行对象定义)
+
+例如:`对象.1(对于数字成员名来说)` `对象.~攻击(对于字符串或文字来说)`
 
 例如:`对象@(~攻击,1)`
 
