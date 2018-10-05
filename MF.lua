@@ -549,10 +549,16 @@ function explainer(on_code)--解释器主函数
 					then
 					if(calculate(main_stack[i][2])==false)
 						then
-						while(main_stack[i][1]~='endif')
+						while(main_stack[i][1]~='endif'and main_stack[i][1]~='else')
 							do
 							i=i+1
 						end
+					end
+					elseif(main_stack[i][1]=='else')
+						then
+						while(main_stack[i][1]~='endif')
+						do
+						i=i+1
 					end
 				elseif(main_stack[i][1]=='rep')
 					then
