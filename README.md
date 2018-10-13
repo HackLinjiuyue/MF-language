@@ -42,7 +42,6 @@ special value(these are key words that can do something before calculating):
 `false`
 `true`
 `undefined(js)``nil(lua)`
-`obj`
 
 ### define function
 `deffun functionname parms(or arguments.the same meaning there.use<,>to separate arguments);sentence1;sentence2;……;endfun;`
@@ -136,6 +135,8 @@ load(only for lua version)
 
 `&`:and
 
+`[]`:define array(list) use`,`to separate the elements.every calculation only support one dimension.
+
 #### object
 `.`:get object member value
 
@@ -171,7 +172,6 @@ e.g.:`x@(1,2)`
 `true`
 `false`
 `nil(lua)` `undefined(js)`
-`obj`
 
 ### 条件语句
 `if a<b;语句1;语句2;……;endif;`
@@ -233,3 +233,5 @@ load(仅用于lua版)
 函数：`,`追加参数 `@`引用函数
 
 例如：`a@(1,2)`
+
+数组定义：[]方括号内的为数组元素，中间用逗号隔开，一次只能定义一个维度的值
