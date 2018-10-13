@@ -28,7 +28,7 @@
    			yxj['$']=9
    			yxj['.']=8
    			yxj['@']=11
-   			yxj[',']=10
+   			yxj[',']=3
    	var value={},valuename={},err={},errcount=-1,out=""
    	all_code=parseCode(all_code)
    	function run(code){
@@ -47,21 +47,55 @@
             return value[exp]
          }
          else{
-            let temp={}
+            let temp=new Array()
+            let t=-1
+            let left=exp.match(/\[/g)
+            if(left==undefined){left=0}else{left=left.length}
+            let right=exp.match(/]/g)
+            if(right==undefined){right=0}else{right=right.length}
+            if(left!=right){
+                  errcount+=1
+                  err[errcount]=(main_a+1)+"：错误：数组括号的数量不匹配"
+                  return null
+            }
+            left=exp.match(/{/g)
+               if(left==undefined){left=0}else{left=left.length}
+            right=exp.match(/}/g)
+               if(right==undefined){right=0}else{right=right.length}
+            if(left!=right){
+               errcount+=1
+               err[errcount]=(main_a+1)+"：错误：对象括号的数量不匹配"
+               return null
+            }
             while(ca<exp.length){
                s=exp[ca]
                if(s=="("){
                   sa=sa+1
                   stack[sa]=s
                }
+               else if(s=="["){
+                  sa=sa+1
+                  stack[sa]=s
+                  t+=1
+               }
+               else if(s=="]"){
+                  while(stack[sa]!="["){
+                     la+=1
+                     last[la]=stack[sa]
+                     stack[sa]=undefined
+                     sa-=1
+                  }
+                  sa+=1
+                  stack[sa]="]"
+               }
                else if(s==")"){
                   while(stack[sa]!="("){
                      la=la+1
                      last[la]=stack[sa]
-                     stack[sa]=null
+                     stack[sa]=undefined
                      sa=sa-1
                   }
-                  stack[sa]=null
+                  stack[sa]=undefined
                   sa-=1
                   la+=1
                   last[la]=""
@@ -115,12 +149,17 @@
                      stack[sa]=stack[sa]*-1
                      sa+=1
                   }
+                  else if(s=="]"){
+                     stack[sa]=stack[sa].split(",")
+                     for(x in stack[sa]){
+                        stack[sa][x]=calculate(stack[sa][x])
+                     }
+                     stack[sa-1]=stack[sa]
+                     sa+=1
+                  }
                   else if(s=="."){
                      lastobj=stack[sa-1]
                      stack[sa-1]=stack[sa-1].member[stack[sa]]
-                  }
-                  else if(s==","){
-                     stack[sa-1]=stack[sa-1]+","+stack[sa]
                   }
                   else if(s=="@"){
                      ar=0
@@ -144,22 +183,16 @@
                            }
                            ar+=1
                      }ar=0
-                      if(stack[sa-1].type=="function"||stack[sa-1].type=='method'){
+                      if(stack[sa-1].type=="function"){
                      while(ar<mode.len+1){
                         value[mode[ar]]=calculate(valuetable[ar])
                         ar+=1
-                     }
-                     if(stack[sa-1].type=='method'){
-                        value['this']=lastobj
                      }
                      stack[sa-1]=run(stack[sa-1].code)
                      ar=0
                      while(ar<mode.len){
                         value[mode[ar]]=null
                         ar+=1
-                     }
-                     if(stack[sa-1].type=='method'){
-                        value['this']=null
                      }
                   }
                   else if(stack[sa-1].type=="object"){
@@ -234,7 +267,10 @@
                }
                else if(s=="|"){
                   stack[sa-1]=stack[sa-1]||stack[sa]
-               }sa-=1
+               }
+               else if(s==","){
+                     stack[sa-1]=stack[sa-1]+","+stack[sa]
+                  }sa-=1
                }else{
                   sa+=1
                   if(last[ca][0]=="~"){
