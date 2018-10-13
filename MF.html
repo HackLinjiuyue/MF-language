@@ -150,10 +150,11 @@
                      sa+=1
                   }
                   else if(s=="]"){
-                     stack[sa]=stack[sa].split(",")
+                     if(typeof stack[sa]!="number"){stack[sa]=stack[sa].split(",")
                      for(x in stack[sa]){
                         stack[sa][x]=calculate(stack[sa][x])
                      }
+                  }
                      stack[sa-1]=stack[sa]
                      sa+=1
                   }
