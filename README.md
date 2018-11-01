@@ -143,6 +143,7 @@ load(only for lua version)
 e.g.:`object.1(for number)` `object.~x(for string)`
 
 `@`:add object members or change the value of the object(must define first)
+//for old version
 
 e.g.:`object@(~atk,1)`
 
@@ -230,7 +231,9 @@ load(仅用于lua版)
 
 例如:`对象@(~攻击,1)`
 
-函数：`,`追加参数 `@`引用函数
+函数：`,`追加参数 `@`引用函数(老版本)
+
+新版本：a(xx,yy)即可
 
 例如：`a@(1,2)`
 
