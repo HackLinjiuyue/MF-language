@@ -79,7 +79,7 @@ warning:if you want to load a file that is not in the folder(or the same list),y
 e.g.:`load test` or `load /desktop/test`
 
 ## already finished
-out(lua:only support toobj:`console`)(js:support `console` and `output`)
+out console xxx
 
 def
 
@@ -108,7 +108,7 @@ load(only for lua version)
 
 4.sign symbol:
 
-`~`:the letters after this are seen as strings.
+`"`:the letters after this are seen as strings.
 
 ### calculate
 #### number
@@ -121,7 +121,7 @@ load(only for lua version)
 `$x`:$ means get negative number.
 
 #### logic
-`><=!|&`(only for js:`≥≤`)
+`><=!|&`
 
 `>`:greater than
 
@@ -135,24 +135,8 @@ load(only for lua version)
 
 `&`:and
 
-`[]`:define array(list) use`,`to separate the elements.every calculation only support one dimension.
-
-#### object
-`.`:get object member value
-
-e.g.:`object.1(for number)` `object.~x(for string)`
-
-`@`:add object members or change the value of the object(must define first)
-//for old version
-
-e.g.:`object@(~atk,1)`
-
-#### function
-`,`:add parms(arguments)
-
-`@`:quote function
-
-e.g.:`x@(1,2)`
+#### string
+`~`:connect strings together
 
 # 语法（待完善）
 `def 变量名 值`———————|定义变量
@@ -161,18 +145,11 @@ e.g.:`x@(1,2)`
 
 `let 变量名 值`———————|设置变量，出现未定义的变量时报错
 
-`out 目标 值`-————————————|输出语句
-
-`deffun 函数名 参数;语句1;语句2;……;endfun;`|定义函数，用逗号来隔开每个参数
-
-`return 值` ——————|函数返回值，不填返回`nil`（lua）`undefined`(js)
-
-`load 文件名/文件的绝对路径`————|用于加载并运行.mfs源代码(仅用于lua版)
+`out console 值`-————————————|输出语句
 
 ### 定义变量时的特殊值
 `true`
 `false`
-`nil(lua)` `undefined(js)`
 
 ### 条件语句
 `if a<b;语句1;语句2;……;endif;`
@@ -189,7 +166,7 @@ e.g.:`x@(1,2)`
 `endrep`
 
 ## 已完成
-out（lua:当前只支持目标`console`)(js:支持`console`和`output`)
+out
 
 def
 
@@ -198,16 +175,6 @@ let
 rep
 
 if
-
-else
-
-deffun
-
-return
-
-fun
-
-load(仅用于lua版)
 
 ### 规则：
 1.所有的换行(``\n``)全部忽略
@@ -218,23 +185,11 @@ load(仅用于lua版)
 
 4.变量标识符：
 
-`~`：~后的字符将视作字符串处理
+`"`："后的字符将视作字符串处理
 
 ### 计算表达式 规定所有运算为:
-算数：`+-*/  ^平n次方 #开n次根 $取负`
+算数：`+-*/`
 
-逻辑：`><=!&|`(仅js可用:`≥≤`)
+字符串连接：`~`
 
-对象：`.`取对象成员 `@`给对象成员赋值/添加对象成员(需先进行对象定义)
-
-例如:`对象.1(对于数字成员名来说)` `对象.~攻击(对于字符串或文字来说)`
-
-例如:`对象@(~攻击,1)`
-
-函数：`,`追加参数 `@`引用函数(老版本)
-
-新版本：a(xx,yy)即可
-
-例如：`a@(1,2)`
-
-数组定义：[]方括号内的为数组元素，中间用逗号隔开，一次只能定义一个维度的值
+逻辑：`><=!&|`
