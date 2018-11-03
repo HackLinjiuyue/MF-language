@@ -38,24 +38,15 @@ qq群：916289058
 ### define
 `def valuename value`
 
-special value(these are key words that can do something before calculating):
+special value
 `false`
 `true`
-`undefined(js)``nil(lua)`
-
-### define function
-`deffun functionname parms(or arguments.the same meaning there.use<,>to separate arguments);sentence1;sentence2;……;endfun;`
-
-use `return value` to give the result of the function
-
-### quote function
-`fun functionname parm1 parm2……`
 
 ### change value
 `let valuename value`
 
 ### output
-`out toObj value`
+`out console value`
 
 ### if
 `if condition;sentence1;sentence2;……;endif;`
@@ -69,15 +60,6 @@ use `return value` to give the result of the function
 `endif`
 `endrep`
 
-### load file and run
-`load filename`
-
-after loading,it will run
-
-warning:if you want to load a file that is not in the folder(or the same list),you have to write the absolute address.
-
-e.g.:`load test` or `load /desktop/test`
-
 ## already finished
 out console xxx
 
@@ -88,16 +70,6 @@ let
 rep
 
 if
-
-else
-
-deffun
-
-return
-
-fun
-
-load(only for lua version)
 
 ## rules
 1.all the symbol`\n`must be neglected.
@@ -113,12 +85,6 @@ load(only for lua version)
 ### calculate
 #### number
 `+-*/`
-
-`#x`:# means root and x is the power number.
-
-`^x`:power
-
-`$x`:$ means get negative number.
 
 #### logic
 `><=!|&`
