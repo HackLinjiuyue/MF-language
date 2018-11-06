@@ -38,7 +38,7 @@ special value
 ### output
 `out console value`
 
-### if
+### if(\n means key:enter)
 `if condition\nsentence1\nsentence2\n……\nendif`
 
 ### loop
@@ -84,7 +84,7 @@ special value
 `true`
 `false`
 
-### 条件语句
+### 条件语句(\n表示回车)
 `if a<b\n语句1\n语句2\n……\nendif\n`
 
 ### 循环语句
