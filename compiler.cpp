@@ -142,8 +142,7 @@ string sss;
 long lSize;
 char * buffer;
 size_t result;
-pFile = fopen ( path.c_str() , "rb" );//希诺：C:\Users\Administrator\Desktop\test.txt
-//我：/Users/boatbridge/Desktop/test.mfs
+pFile = fopen ( path.c_str() , "rb" );
 if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
 // obtain file size:
 fseek (pFile , 0 , SEEK_END);
