@@ -9,8 +9,12 @@ if you interested in it,please join in with your github name or tell me how you 
 
 It runs successfully on the MacOS(OS X).
 
+please don't use it for any other purpose except study and communication.
+
 # MF语言
 这是我自己用来学习编译程序时设计的一门编译解释型计算机语言
+
+请勿用于除交流学习外的其它用途
 
 联系方式：
 qq群：916289058
