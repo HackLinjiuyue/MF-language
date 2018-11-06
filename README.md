@@ -1,30 +1,16 @@
 # MF-language
 This is a computer language(explain type) that designed by myself.
-Now it has many problems that I have to deal with.
-I will show this to you and wish you can help me deal with difficulties or communicate with me to develop it.Thanks~
 
-I will rewrite the code in c++ after I solve all the basic problems.
-Of course we can do this together.
-If I can,I will try to make the complier of MF.
+I design it to learn how to compile.
 
 communication:qq group:916289058
 
-please join in with your github name or sketch how you know this.
+if you interested in it,please join in with your github name or tell me how you know this.
 
 It runs successfully on the MacOS(OS X).
 
-please make a file named 'test.mfs' or change the code of reading file to use.
-
 # MF语言
-这是我自己设计的一门解释型计算机语言，现在还存在着许多的问题等待解决。
-我将会将源代码公布出来，希望各位能和我一起来解决问题或是一起做开发，谢谢~
-
-我将会在所有基础问题解决后用c++重写代码。
-当然我们可以一起来做这件事情。
-
-如果可以的话，我会尝试去做MF的编译器。
-
-请创建一个名为test.mfs的文本文件或是修改读取代码来使用。
+这是我自己用来学习编译程序时设计的一门编译解释型计算机语言
 
 联系方式：
 qq群：916289058
@@ -49,37 +35,16 @@ special value
 `out console value`
 
 ### if
-`if condition;sentence1;sentence2;……;endif;`
-
-`if a<b;s1;……;else;s1;……;endif`
+`if condition\nsentence1\nsentence2\n……\nendif`
 
 ### loop
-`rep conditon;sentence1;sentence2;……;endrep;`
+`rep conditon\nsentence1\nsentence2\n……\nendrep\n`
 
 ### end
 `endif`
 `endrep`
 
-## already finished
-out console xxx
-
-def
-
-let
-
-rep
-
-if
-
-## rules
-1.all the symbol`\n`must be neglected.
-
-2.`;` is seen as the split symbol of each sentence.
-
-3.each sentence must use ` `(space)as the word split symbol.
-
-4.sign symbol:
-
+# sign symbol:
 `"`:the letters after this are seen as strings.
 
 ### calculate
@@ -104,10 +69,8 @@ if
 #### string
 `~`:connect strings together
 
-# 语法（待完善）
+# 语法
 `def 变量名 值`———————|定义变量
-
-`fun 函数名 参数1 参数2……`——- |执行函数
 
 `let 变量名 值`———————|设置变量，出现未定义的变量时报错
 
@@ -118,39 +81,17 @@ if
 `false`
 
 ### 条件语句
-`if a<b;语句1;语句2;……;endif;`
-
-`if a<b;语句1;……;else;语句1;……;endif`
+`if a<b\n语句1\n语句2\n……\nendif\n`
 
 ### 循环语句
-
-`rep a<b;语句1;语句2;……;endrep;`
+`rep a<b\n语句1\n语句2\n……\nendrep\n`
 
 ### 结束语句
 `endif`
 
 `endrep`
 
-## 已完成
-out
-
-def
-
-let
-
-rep
-
-if
-
-### 规则：
-1.所有的换行(``\n``)全部忽略
-
-2.以`;`作为句子与句子间的分割符
-
-3.每一句中每空一格`` ``算一个单词
-
 4.变量标识符：
-
 `"`："后的字符将视作字符串处理
 
 ### 计算表达式 规定所有运算为:
