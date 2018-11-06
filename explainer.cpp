@@ -432,8 +432,7 @@ FILE * pFile;
 long lSize;
 char * buffer;
 size_t result;
-pFile = fopen ( p.c_str() , "rb" );//希诺：C:\Users\Administrator\Desktop\test.txt
-//我：/Users/boatbridge/Desktop/test.mfc
+pFile = fopen ( p.c_str() , "rb" );
 if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
 // obtain file size:
 fseek (pFile , 0 , SEEK_END);
