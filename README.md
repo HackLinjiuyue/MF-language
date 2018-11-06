@@ -1,5 +1,5 @@
 # MF-language
-This is a computer language(explain type) that designed by myself.
+This is a computer language(compile-explain type) that designed by myself.
 
 I design it to learn how to compile.
 
